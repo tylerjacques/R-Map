@@ -1,0 +1,57 @@
+
+shinyUI(pageWithSidebar(
+  headerPanel("Network Volume"),
+  
+  sidebarPanel(
+br(em("Date Range: 01/01/2014 - 09/30/2014")),
+
+br(),
+
+    radioButtons("dist", h4("Company"),
+                 list("CMF" = "CMF",
+                      "EMF" = "EMF",
+                      "CMH" = "CMH",
+				 "LOD" = "LOD",
+				 "ALL" = "ALL")),
+
+
+
+
+br(),
+      tags$head(
+        tags$style(type="text/css", "select { max-width: 200px; }"),
+        tags$style(type="text/css", "textarea { max-width: 185px; }"),
+        tags$style(type="text/css", ".jslider { max-width: 200px; }"),
+        tags$style(type='text/css', ".well { max-width: 310px; }"),
+        tags$style(type='text/css', ".span4 { max-width: 310px; }")
+      ),
+
+
+br(),
+    numericInput("minp", h4("Minimum PPTM"), -2, step=.05),
+
+
+    numericInput("maxp", h4("Maximum PPTM"), 2, step=.05),
+br(),
+
+    numericInput("n", h4("Minimum Number of Orders"), 1),
+br(),
+br(),
+
+
+    submitButton("Update View"),
+
+br(),
+
+    downloadButton('downloadPlot', 'Download PDF of Plot')
+
+  ),
+
+  
+  mainPanel(
+    tabsetPanel(
+      tabPanel("Map Preview", plotOutput("plot", height = 800, width = 1110))
+
+    )
+  )
+))

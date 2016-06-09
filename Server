@@ -1,0 +1,276 @@
+library(maps)
+library(shiny)
+#library(devtools)
+library(sp)
+library(geosphere)
+
+data(canada.cities)
+data(us.cities)
+xlim <- c(-130.000000,-54.000000)
+ylim <- c(24.039321, 69.000000)
+locations <- read.csv("locations.csv", header=TRUE)
+lanes <- read.csv("lanes.csv", header=TRUE, as.is=TRUE)
+
+pal <- colorRampPalette(c("firebrick", "gold","springgreen"))
+colors <- pal(100)
+
+
+		
+shinyServer(function(input, output) {
+
+data <- reactive({  
+    dist <- switch(input$dist,
+                   CMF = "CMF",
+                   EMF = "EMF",
+                   LOD = "LOD",
+                                      rnorm)
+
+    dist(input$n)
+	dist(input$minp)
+	dist(input$maxp)
+
+	})
+
+plotInput <- (function(){
+    	dist <- input$dist
+	n <- input$n
+	minp <- input$minp
+	maxp <- input$maxp
+	
+
+	map("world", col="gray42", fill=TRUE, bg="white", lwd=0.1, xlim=xlim, ylim=ylim)
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 1),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}
+       
+    	lines(inter, col=colors[colindex], lwd=1)
+}}, error=function(e){})
+
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.6),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}      
+    	lines(inter, col=colors[colindex], lwd=.6)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.4),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}    
+    	lines(inter, col=colors[colindex], lwd=.4)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.3),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}       
+    	lines(inter, col=colors[colindex], lwd=.3)
+}}, error=function(e){})
+
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.2),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}      
+    	lines(inter, col=colors[colindex], lwd=.2)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.1),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}       
+    	lines(inter, col=colors[colindex], lwd=.1)
+}}, error=function(e){})
+
+
+
+
+
+	})
+
+plotInput2 <- function(){
+    	dist <- input$dist
+	n <- input$n
+	minp <- input$minp
+	maxp <- input$maxp
+	
+
+map("world", col="gray42", fill=TRUE, bg="white", lwd=0.1, xlim=xlim, ylim=ylim)
+ 
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 1),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}
+       
+    	lines(inter, col=colors[colindex], lwd=1)
+}}, error=function(e){})
+
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.6),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}      
+    	lines(inter, col=colors[colindex], lwd=.6)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.4),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}    
+    	lines(inter, col=colors[colindex], lwd=.4)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.3),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}       
+    	lines(inter, col=colors[colindex], lwd=.3)
+}}, error=function(e){})
+
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.2),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}      
+    	lines(inter, col=colors[colindex], lwd=.2)
+}}, error=function(e){})
+
+
+tryCatch({
+	fsub <- lanes[(lanes$airline == dist) & (lanes$cnt > n) & (lanes$pptm > minp) & (lanes$pptm < maxp) & (lanes$lines == 0.1),]
+	fsub <- fsub[order(fsub$cnt),]
+
+	for (j in 1:length(fsub$airline)) {
+    		air1 <- locations[locations$iata == fsub[j,]$airport1,]
+    		air2 <- locations[locations$iata == fsub[j,]$airport2,]
+    	inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+test <- round((fsub[j,]$pptm / c(.85)) * length(colors) )
+
+    	colindex <- if(test>100) {100} else {test}       
+    	lines(inter, col=colors[colindex], lwd=.1)
+}}, error=function(e){})
+             
+
+
+
+map.cities(canada.cities, minpop=110000, cex=.15, pch = 16, label=TRUE, col="white")
+map.cities(canada.cities, capitals=2, cex=.15, pch = 16,  label=TRUE, col="white")
+map.cities(canada.cities, capitals=1, cex=.15, pch = 16,   label=TRUE, col="white")
+map.cities(us.cities, cex=.1, capitals=2, pch = 16, label = TRUE, col="white")
+
+points(c(-80.3086),c(43.36472), col="white", pch = 17, cex=.15) 
+points(c(-79.66388888),c(43.67778), col="white", pch = 17, cex=.15)
+points(c(-73.5678),c(45.49806), col="white", pch = 17, cex=.15)
+points(c(-122.4986111),c(49.06055555), col="white", pch = 17, cex=.15)
+
+	}
+
+
+ output$plot <- renderPlot({
+
+ print(plotInput())
+
+
+	})
+ 
+ output$downloadPlot <- downloadHandler(
+    filename = function() { paste("Cont-Lanes-Map", '.pdf', sep='') },
+    content = function(file) {
+      pdf(file)
+      plotInput2()
+      dev.off()
+    })
+
+})
